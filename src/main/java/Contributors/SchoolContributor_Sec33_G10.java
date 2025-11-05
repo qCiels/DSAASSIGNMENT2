@@ -1,11 +1,10 @@
 package Contributors;
 
 import Exceptions.*;
-import ENUMS.*;
 
-public class SchoolContributor extends Contributor {
+public class SchoolContributor_Sec33_G10 extends Contributor_Sec33_G10 {
 
-    public SchoolContributor(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
+    public SchoolContributor_Sec33_G10(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
         super(name,"School", region);
     }
     @Override

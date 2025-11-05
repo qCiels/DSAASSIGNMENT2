@@ -1,11 +1,10 @@
 package Contributors;
 
 import Exceptions.*;
-import ENUMS.*;
 
-public class InstitutionContributor extends Contributor {
+public class InstitutionContributor_Sec33_G10 extends Contributor_Sec33_G10 {
 
-    public InstitutionContributor(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
+    public InstitutionContributor_Sec33_G10(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
         super(name, "Institution", region);
     }
 

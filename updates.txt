@@ -1,0 +1,21 @@
+# --- contributors ---
+ADD_CONTRIB, INDIVIDUAL, Ali Al Mansoori,ABU_DHABI
+ADD_CONTRIB, NGO, Green Foundation, DUBAI
+ADD_CONTRIB, SCHOOL, Future Academy, SHARJAH
+
+
+# --- projects ---
+ADD_PROJECT,101,Beach_Cleanup,Environmental
+ADD_PROJECT,102,STEM_Workshop, Educational
+
+# --- collaborations ---
+ADD_COLLAB, Ali Al Mansoori, Green Foundation, 101
+ADD_COLLAB, Green Foundation, Future Academy,102
+
+
+# --- updates ---
+UPDATE_NAME,Ali Al Mansoori,Ali A. Mansoori
+UPDATE_REGION,Green Foundation,ABU_DHABI
+
+# --- removals (optional test) ---
+REMOVE_COLLAB,Green Foundation,Future Academy,102

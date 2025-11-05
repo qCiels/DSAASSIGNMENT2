@@ -2,9 +2,9 @@ package Contributors;
 
 import Exceptions.*;
 
-public class IndividualContributor extends Contributor {
+public class IndividualContributor_Sec33_G10 extends Contributor_Sec33_G10 {
 
-    public IndividualContributor(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
+    public IndividualContributor_Sec33_G10(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
         super(name,"Individual", region);
     }
 
