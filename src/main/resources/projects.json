@@ -1,0 +1,14 @@
+[
+  {
+    "id": "P1",
+    "name": "Community Clean-Up",
+    "category": "Environment",
+    "contributors": ["C1", "C2"]
+  },
+  {
+    "id": "P2",
+    "name": "STEM Workshop",
+    "category": "Education",
+    "contributors": ["C1", "C3", "C4"]
+  }
+]

@@ -6,16 +6,17 @@ import java.util.*;
 
 public abstract class Contributor_Sec33_G10 {
 
-    private final String uid = java.util.UUID.randomUUID().toString(); // immutable id
-    private String name;
-    private ContributorType_Sec33_G10 type;
-    private Region_Sec33_G10 regionSec33G10;
-    private final List<Integer> projectIds = new ArrayList<>();
+    protected String id;
+    protected String name;
+    protected ContributorType_Sec33_G10 type;
+    protected Region_Sec33_G10 regionSec33G10;
 
-    protected Contributor_Sec33_G10(String name, String type, String region) throws InvalidRegionException, InvalidContributorTypeException {
+
+    protected Contributor_Sec33_G10(String name, String type, String region, String id) throws InvalidRegionException, InvalidContributorTypeException {
         setRegion(region);
         setName(name);
         setType(type);
+        setId(id);
 
     }
 
@@ -38,6 +39,11 @@ public abstract class Contributor_Sec33_G10 {
             throw new InvalidRegionException("ERROR: INVALID CONTRIBUTOR REGION INPUT, try again...");
        this.regionSec33G10 = Region_Sec33_G10.valueOf(region.trim().toUpperCase());
     }
+    public void setId(String id) {
+        if (id == null || id.isBlank())
+            throw new IllegalArgumentException("ERROR: INVALID CONTRIBUTOR ID INPUT, try again...");
+        this.id = id.trim();
+    }
 
     //getters
     public Region_Sec33_G10 getRegion() {
@@ -51,20 +57,24 @@ public abstract class Contributor_Sec33_G10 {
     public String getName() {
         return name;
     }
-
-    // project participation bookkeeping
-    public List<Integer> getProjectIds() {
-        return Collections.unmodifiableList(projectIds);
-    }
-    protected void addProjectId(int projectId) {
-        if (projectId < 0)
-            throw new IllegalArgumentException("projectId < 0");
-        projectIds.add(projectId);
+    public String getId() {
+        return id;
     }
 
-    // --- abstract hooks (define HOW the subtype behaves) ---
-    /** Called when this contributor joins a project; impl should decide any extra behavior. */
-    public abstract void joinProject(int projectId);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contributor_Sec33_G10 that = (Contributor_Sec33_G10) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
 
     /** Short self-presentation to UI/logs. */
     public abstract void introduce();
@@ -77,16 +87,8 @@ public abstract class Contributor_Sec33_G10 {
     public String toString() {
         return name + " [" + type + ", " + regionSec33G10 + "]";
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Contributor_Sec33_G10 c)) return false;
-        return uid.equals(c.uid);
-    }
 
-    @Override
-    public int hashCode() {
-        return uid.hashCode();
-    }
+
+
 
 }

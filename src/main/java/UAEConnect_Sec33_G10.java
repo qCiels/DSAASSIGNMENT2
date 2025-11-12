@@ -1,116 +1,77 @@
 import Contributors.*;
+import Exceptions.*;
 
-import java.nio.file.*;
-import java.util.List;
-
-// VIS imports
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.SingleGraph;
-
-public final class UAEConnect_Sec33_G10 {
-    public static void main(String[] args) throws Exception {
+public class UAEConnect_Sec33_G10 {
+    public static void main(String[] args) {
         GraphManager_Sec33_G10 gm = new GraphManager_Sec33_G10();
 
-        // -----------------------------
-        // (6) FILE-BASED FEED (dynamic)
-        // -----------------------------
-        String txtPath = "updates.txt";
-        if (Files.exists(Paths.get(txtPath))) {
-            gm.applyCsvFile(txtPath);                  // applies adds/updates/removals from file
-            System.out.println("[Feed] Loaded: " + txtPath);
-        } else {
-            System.out.println("[Feed] No updates.txt present");
+        // 1) Load from resources
+        String contribPath = UAEConnect_Sec33_G10.class.getResource("/contributors.json").getPath();
+        String projectsPath = UAEConnect_Sec33_G10.class.getResource("/projects.json").getPath();
+        gm.loadContributorsFromFile(contribPath);
+        gm.loadProjectsFromFile(projectsPath);
+
+        // 2) Add a new contributor
+        try {
+            Contributor_Sec33_G10 cNew = new IndividualContributor_Sec33_G10("Layla Al Nuaimi", "Abu_Dhabi", "C999");
+            gm.addContributor(cNew);
+        } catch (InvalidRegionException | InvalidContributorTypeException e) {
+            System.err.println(e.getMessage());
         }
 
-        // -----------------------------------------
-        // (1) ADD CONTRIBUTORS (unique + metadata)
-        // -----------------------------------------
-        Contributor_Sec33_G10 blue = new NGOContributor_Sec33_G10("Blue Planet Initiative", "DUBAI");
-        Contributor_Sec33_G10 horizon = new SchoolContributor_Sec33_G10("Horizon International School", "SHARJAH");
-        gm.addContributor(blue);
-        gm.addContributor(horizon);
-
-        // ---------------------------------------------
-        // (2) PROJECT LIST + COLLABORATIONS (annotated)
-        // ---------------------------------------------
-        gm.addProject(new Project_Sec33_G10(101, "Beach Cleanup", "Environmental"));
-        gm.addProject(new Project_Sec33_G10(102, "STEM Workshop", "Educational"));
-        gm.addProject(new Project_Sec33_G10(103, "Community Sports Day", "Youth"));
-        gm.addCollaboration(horizon, blue, 102);    // another annotated edge
-        System.out.println("[Projects] " + gm.listProjects().size() + " active projects");
-
-        // ------------------------------------------------------
-        // (3) UPDATE CONTRIBUTOR INFO (name, type, region, proj)
-        // ------------------------------------------------------
-
-        gm.updateRegion(blue, "ABU_DHABI");
-
-        // ----------------------------------------------------
-        // (4) REMOVE SPECIFIC COLLAB OR ENTIRE CONTRIBUTOR
-        // ----------------------------------------------------
-
-        // --------------------------------------------
-        // (5) DEGREE-CENTRALITY RANKING (by # of edges)
-        // --------------------------------------------
-        System.out.println("\n[Ranking] Degree centrality:");
-        List<Contributor_Sec33_G10> ranked = gm.rankByDegreeDesc();
-        for (int i = 0; i < ranked.size(); i++) {
-            var c = ranked.get(i);
-            System.out.println((i + 1) + ". " + c.getName() +
-                    " — degree " + gm.getGraph().degreeOf(c));
-        }
-
-        // ------------------------------
-        // VIS: init window + initial sync
-        // ------------------------------
-        System.setProperty("org.graphstream.ui", "swing");
-        Graph vis = new SingleGraph("UAEConnect");
-        vis.setAttribute("ui.stylesheet", "node { text-size: 14px; } edge { text-size: 12px; }");
-        vis.display();
-        refreshVisualization(gm, vis);
-            // VIS: refresh after any mutation/command
-            refreshVisualization(gm, vis);
-
-    }
-
-
-
-    // VIS: keep GraphStream view in sync with JGraphT graph
-    private static void refreshVisualization(GraphManager_Sec33_G10 gm, Graph vis) {
-        // add missing nodes
-        for (Contributor_Sec33_G10 c : gm.getGraph().vertexSet()) {
-            if (vis.getNode(c.getName()) == null) {
-                Node n = vis.addNode(c.getName());
-                n.setAttribute("ui.label", c.getName());
+        // 3) Update an existing contributor
+        Contributor_Sec33_G10 c1 = gm.getContributorById("C1");
+        if (c1 != null) {
+            gm.updateName(c1, "Ali A. Mansoori");
+            try {
+                gm.updateRegion(c1, "Dubai");
+                gm.updateType(c1, "Individual");
+            } catch (InvalidRegionException | InvalidContributorTypeException e) {
+                System.err.println(e.getMessage());
             }
         }
-        // remove stale nodes
-        java.util.List<String> toRemoveNodes = new java.util.ArrayList<>();
-        for (Node n : vis) {
-            boolean exists = false;
-            for (Contributor_Sec33_G10 c : gm.getGraph().vertexSet()) {
-                if (c.getName().equals(n.getId())) { exists = true; break; }
-            }
-            if (!exists) toRemoveNodes.add(n.getId());
-        }
-        toRemoveNodes.forEach(vis::removeNode);
 
-        // sync edges (unique id per src-dst-project)
-        java.util.Set<String> wanted = new java.util.HashSet<>();
-        for (CollaborationEdge_Sec33_G10 e : gm.getGraph().edgeSet()) {
-            var s = gm.getGraph().getEdgeSource(e).getName();
-            var t = gm.getGraph().getEdgeTarget(e).getName();
-            String id = s + "-" + t + "-P" + e.projectId();
-            wanted.add(id);
-            if (vis.getEdge(id) == null) {
-                var ve = vis.addEdge(id, s, t);
-                ve.setAttribute("ui.label", "P#" + e.projectId());
-            }
+        // 4) Create a new collaboration
+        Contributor_Sec33_G10 a = gm.getContributorById("C1");
+        Contributor_Sec33_G10 b = gm.getContributorById("C2");
+        if (a != null && b != null) {
+            gm.addCollaboration(a, b, "P999");
         }
-        // remove stale edges
-        java.util.List<String> stale = new java.util.ArrayList<>();
-        for (var e : vis.getEachEdge()) if (!wanted.contains(e.getId())) stale.add(e.getId());
-        stale.forEach(vis::removeEdge);
+
+        // 5) Remove a specific collaboration
+        gm.removeCollaboration("C1", "C2", "P999");
+
+        // 6) Remove a contributor
+        Contributor_Sec33_G10 toRemove = gm.getContributorById("C999");
+        if (toRemove != null) {
+            gm.removeContributor(toRemove);
+        }
+
+        //Ranking
+        System.out.println("\n--- Contributor Ranking by Degree ---");
+        int rank = 1;
+        for (var c : gm.rankByDegreeDesc()) {
+            System.out.printf("%d) %s - Degree: %d%n", rank++, c.getName(), gm.getGraph().degreeOf(c));
+        }
+
+        // --- test 1: connected pair (should return a path)
+        System.out.println("\nPath C2 -> C4:");
+        var path1 = gm.findConnectionPath("C2", "C4");
+        System.out.println(path1.stream().map(Contributor_Sec33_G10::getName).toList());
+
+// --- test 2: same node (path of length 1)
+        System.out.println("\nPath C1 -> C1:");
+        var path2 = gm.findConnectionPath("C1", "C1");
+        System.out.println(path2.stream().map(Contributor_Sec33_G10::getName).toList());
+
+// --- test 3: nonexistent ID (should be empty)
+        System.out.println("\nPath C2 -> C9999 (missing):");
+        var path3 = gm.findConnectionPath("C2", "C9999");
+        System.out.println(path3);
+
+        System.out.println("Demo complete.");
+        gm.showNetworkStats();
+        NetworkVisualizer_Sec33_G10.show(gm.getGraph());
+
     }
 }

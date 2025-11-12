@@ -4,14 +4,8 @@ import Exceptions.*;
 
 public class IndividualContributor_Sec33_G10 extends Contributor_Sec33_G10 {
 
-    public IndividualContributor_Sec33_G10(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
-        super(name,"Individual", region);
-    }
-
-    @Override
-    public void joinProject(int projectId) {
-        addProjectId(projectId);
-        System.out.println(getName() + " joined project " + projectId + " as an individual.");
+    public IndividualContributor_Sec33_G10(String name, String region, String id) throws InvalidRegionException, InvalidContributorTypeException {
+        super(name,"Individual", region, id);
     }
 
     @Override

@@ -1,0 +1,6 @@
+[
+  { "id": "C1", "name": "Ali Mansoori",    "type": "Individual",   "region": "ABU_DHABI" },
+  { "id": "C2", "name": "Green NGO",       "type": "NGO",          "region": "DUBAI" },
+  { "id": "C3", "name": "Al Noor School",  "type": "School",       "region": "SHARJAH" },
+  { "id": "C4", "name": "Zayed Univ",      "type": "Institution",  "region": "ABU_DHABI" }
+]

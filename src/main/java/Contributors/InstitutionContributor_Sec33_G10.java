@@ -4,15 +4,10 @@ import Exceptions.*;
 
 public class InstitutionContributor_Sec33_G10 extends Contributor_Sec33_G10 {
 
-    public InstitutionContributor_Sec33_G10(String name, String region) throws InvalidRegionException, InvalidContributorTypeException {
-        super(name, "Institution", region);
+    public InstitutionContributor_Sec33_G10(String name, String region, String id) throws InvalidRegionException, InvalidContributorTypeException {
+        super(name, "Institution", region, id);
     }
 
-    @Override
-    public void joinProject(int projectId) {
-        addProjectId(projectId);
-        System.out.println(getName() + " (Institution) partnered in project " + projectId + ".");
-    }
 
     @Override
     public void introduce() {
